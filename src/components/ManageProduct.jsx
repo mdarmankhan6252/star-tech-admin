@@ -1,12 +1,42 @@
+import { useQuery } from '@tanstack/react-query';
 import React from 'react';
+import useAxiosPublic from '../hooks/useAxiosPublic';
+import { MoonLoader } from "react-spinners";
+import { toast } from 'react-toastify';
 
 const ManageProduct = () => {
-   const products = [
-      { name: "Casual Shoes", category: "Shoes", offerPrice: 999, inStock: true, image: "https://raw.githubusercontent.com/prebuiltui/prebuiltui/main/assets/card/productImage.png", },
-      { name: "Casual Shoes", category: "Shoes", offerPrice: 999, inStock: false, image: "https://raw.githubusercontent.com/prebuiltui/prebuiltui/main/assets/card/productImage2.png", },
-      { name: "Casual Shoes", category: "Shoes", offerPrice: 999, inStock: true, image: "https://raw.githubusercontent.com/prebuiltui/prebuiltui/main/assets/card/productImage3.png", },
-   ];
-   return (
+   const axiosPublic = useAxiosPublic();
+
+   const { data: products, isLoading, isPending,refetch } = useQuery({
+      queryKey: ['products'],
+      queryFn: async () => {
+         const res = await axiosPublic('/product');
+         return res.data;
+      }
+   })
+
+   if (isLoading || isPending) {
+      return <div className='absolute left-0 top-0 w-full h-screen z-50 border flex items-center justify-center'>
+         <MoonLoader color="#fa8001" />
+
+      </div>
+   }
+
+   //delete handler
+
+   const deleteProduct = async(id) =>{
+      console.log(id);
+      const res = await axiosPublic.delete(`/product/${id}`);
+      if(res.status === 200){
+         toast.success(res.data.message)
+         refetch();
+      }
+   }
+
+
+
+
+   return products && (
       <div>
          <h2 className="font-semibold text-xl text-gray-900/80 pb-6">MANAGE PRODUCTS</h2>
 
@@ -28,12 +58,12 @@ const ManageProduct = () => {
                            <tr key={index} className="border-t border-gray-500/20">
                               <td className="md:px-4 pl-2 md:pl-4 py-3 flex items-center space-x-3 truncate">
                                  <div className="border border-gray-300 rounded p-2">
-                                    <img src={product.image} alt="Product" className="w-16" />
+                                    <img src={product.photoUrl} alt="Product" className="w-16" />
                                  </div>
                                  <span className="truncate max-sm:hidden w-full">{product.name}</span>
                               </td>
                               <td className="px-4 py-3">{product.category}</td>
-                              <td className="px-4 py-3 max-sm:hidden">${product.offerPrice}</td>
+                              <td className="px-4 py-3 max-sm:hidden">{product.currentPrice}৳</td>
                               <td className="px-4 py-3">
                                  <label className="relative inline-flex items-center cursor-pointer text-gray-900 gap-3">
                                     <input type="checkbox" className="sr-only peer" defaultChecked={product.inStock} />
@@ -42,7 +72,7 @@ const ManageProduct = () => {
                                  </label>
                               </td>
                               <td>
-                                 <button className='bg-amber-600 hover:bg-red-600 text-white p-1.5 px-3 rounded-sm cursor-pointer'>DELETE</button>
+                                 <button onClick={() => deleteProduct(product._id)} className='bg-amber-600 hover:bg-red-600 text-white p-1.5 px-3 rounded-sm cursor-pointer'>DELETE</button>
                               </td>
                            </tr>
                         ))}

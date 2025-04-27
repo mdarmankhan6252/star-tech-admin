@@ -1,19 +1,14 @@
 import { useState } from "react";
 import { AiOutlineCloudUpload } from "react-icons/ai";
-
-// photoUrl,
-// title,
-// prevPrice,
-// CurrentPrice,
-// inStock,
-// features : [],
-// category
+import useAxiosPublic from "../hooks/useAxiosPublic";
 
 
 const AddProduct = () => {
    const [inStock, setInStock] = useState(false);
    const [features, setFeatures] = useState([]);
    const [featureInput, setFeatureInput] = useState("");
+   const axiosPublic = useAxiosPublic();
+   console.log(axiosPublic);
 
    const handleAddFeature = () => {
       if (featureInput.trim() !== "") {

@@ -7,8 +7,11 @@ import Statistics from './components/Statistics';
 import { ToastContainer } from 'react-toastify';
 import AddProduct from './components/AddProduct';
 import ManageProduct from './components/ManageProduct';
+import Login from './components/Login';
+import { useState } from 'react';
 
 const App = () => {
+  const [user, setUser] = useState(true)
   const location = useLocation();
 
   const sidebarLinks = [
@@ -19,7 +22,7 @@ const App = () => {
 
   return (
     <>
-      
+
       <ToastContainer />
 
       {/* Navbar */}
@@ -35,7 +38,7 @@ const App = () => {
       </div>
 
       <div className="flex pt-[61px]"> {/* Push everything below navbar */}
-        
+
         {/* Sidebar */}
         <div className="fixed top-[61px] left-0 md:w-64 w-16 border-r h-[calc(100vh-61px)] bg-white text-base border-gray-300 pt-4 flex flex-col">
           {sidebarLinks.map((item, index) => (
@@ -54,14 +57,19 @@ const App = () => {
         </div>
 
         {/* Main Content */}
-        <div className="ml-16 md:ml-64 p-6 w-full max-w-7xl"> 
+        <div className="ml-16 md:ml-64 p-6 w-full max-w-7xl">
           <Routes>
             <Route path='/' element={<Statistics />} />
             <Route path='/add-product' element={<AddProduct />} />
-            <Route path='/manage' element={<ManageProduct />} />            
+            <Route path='/manage' element={<ManageProduct />} />
           </Routes>
         </div>
       </div>
+
+      {/* login form */}
+      <Login user={user} setUser={setUser}/>
+
+
     </>
   );
 };
