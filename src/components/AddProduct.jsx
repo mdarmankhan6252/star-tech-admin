@@ -1,5 +1,8 @@
 import { useState } from "react";
 import { AiOutlineCloudUpload } from "react-icons/ai";
+import { toast } from 'react-toastify'
+import axios from 'axios'
+import { ImSpinner10 } from "react-icons/im";
 import useAxiosPublic from "../hooks/useAxiosPublic";
 
 
@@ -8,7 +11,9 @@ const AddProduct = () => {
    const [features, setFeatures] = useState([]);
    const [featureInput, setFeatureInput] = useState("");
    const axiosPublic = useAxiosPublic();
-   console.log(axiosPublic);
+   const [loading, setLoading] = useState(false)
+
+   const imageUpload = `https://api.imgbb.com/1/upload?key=${import.meta.env.VITE_ImgBB_api_key}`
 
    const handleAddFeature = () => {
       if (featureInput.trim() !== "") {
@@ -17,14 +22,76 @@ const AddProduct = () => {
       }
    };
 
+   const handleProductPost = async (e) => {
+      e.preventDefault();
+      try {
+         const form = e.target;
+         setLoading(true)
+         const title = form.title.value;
+         const prevPrice = parseInt(form.prevPrice.value);
+         const currentPrice = parseInt(form.currentPrice.value);
+         const category = form.category.value;
+
+
+         const currentPhoto = form.photoUrl.files[0];
+
+
+         if (!currentPhoto) {
+            return toast.error('Please upload a photo.')
+         }
+
+         const formData = new FormData();
+         formData.append("image", currentPhoto);
+
+
+
+         const res = await axios.post(imageUpload, formData, {
+            headers: {
+               'Content-Type': 'multipart/form-data'
+            }
+         });
+
+         const photoUrl = res.data.data.display_url
+
+
+         const postedProduct = {
+            title,
+            photoUrl,
+            prevPrice,
+            currentPrice,
+            category,
+            inStock,
+            features,
+         }
+
+
+         if (res.data.data.display_url) {
+            const res = await axiosPublic.post('/product', postedProduct);
+            if (res.status === 200) {
+               toast.success(res.data.message || 'Product has been added successfully!')
+               setFeatures([])
+               setFeatureInput('')
+               setInStock(false)
+               form.reset()
+               setLoading(false)
+            }
+         }
+
+      } catch (error) {
+         toast.error(error.message || 'Something went wrong!')
+         setLoading(false)
+      }
+
+   }
+
 
 
    return (
       <div>
          <h2 className="font-semibold text-xl text-gray-900/80 pb-6">ADD PRODUCT</h2>
-         <form className="p-6 border border-gray-300 rounded-md max-w-3xl flex flex-col gap-6">
+         <form onSubmit={handleProductPost} className="p-6 border border-gray-300 rounded-md max-w-3xl flex flex-col gap-6">
             <div className="border border-gray-200 rounded-sm relative flex items-center justify-center">
-               <input type="file" name="" id="" className="p-10 opacity-0 w-full z-10 cursor-pointer " />
+               <input type="file" name="photoUrl" id="" className="p-10 opacity-0 w-full z-10 cursor-pointer " />
                <span className=" text-5xl items-center justify-center absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
                   <AiOutlineCloudUpload />
                </span>
@@ -108,7 +175,18 @@ const AddProduct = () => {
 
 
             <div>
-               <button className="bg-amber-500 py-2.5 px-8 rounded-full text-white font-semibold hover:bg-amber-600 cursor-pointer">ADD PRODUCT</button>
+               <button className="bg-amber-500 py-2.5 px-8 rounded-full text-white font-semibold hover:bg-amber-600 cursor-pointer w-48">
+                  {
+                     loading ?
+                        <span>
+                           <ImSpinner10 className="text-2xl mx-auto animate-spin" />
+                        </span>
+                        :
+                        <span>
+                           ADD PRODUCT
+                        </span>
+                  }
+               </button>
             </div>
 
 

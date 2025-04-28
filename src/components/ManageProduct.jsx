@@ -1,13 +1,15 @@
 import { useQuery } from '@tanstack/react-query';
-import React from 'react';
+import React, { useState } from 'react';
 import useAxiosPublic from '../hooks/useAxiosPublic';
 import { MoonLoader } from "react-spinners";
-import { toast } from 'react-toastify';
+import DeleteModal from './DeleteModal';
 
 const ManageProduct = () => {
    const axiosPublic = useAxiosPublic();
+   const [deleteModal, setDeleteModal] = useState(false);
+   const [deleteId, setDeleteId] = useState(null);
 
-   const { data: products, isLoading, isPending,refetch } = useQuery({
+   const { data: products, isLoading, isPending, refetch } = useQuery({
       queryKey: ['products'],
       queryFn: async () => {
          const res = await axiosPublic('/product');
@@ -24,13 +26,14 @@ const ManageProduct = () => {
 
    //delete handler
 
-   const deleteProduct = async(id) =>{
-      console.log(id);
-      const res = await axiosPublic.delete(`/product/${id}`);
-      if(res.status === 200){
-         toast.success(res.data.message)
-         refetch();
-      }
+   const deleteProduct = async (id) => {
+      setDeleteId(id)
+      setDeleteModal(true)
+      // const res = await axiosPublic.delete(`/product/${id}`);
+      // if (res.status === 200) {
+      //    toast.success(res.data.message)
+      //    refetch();
+      // }
    }
 
 
@@ -81,6 +84,13 @@ const ManageProduct = () => {
                </div>
             </div>
          </div>
+         {/* delete modal */}
+
+         <DeleteModal
+            deleteModal={deleteModal}
+            setDeleteModal={setDeleteModal}
+            deleteId={deleteId}
+            refetch={refetch}/>
       </div>
    );
 };
