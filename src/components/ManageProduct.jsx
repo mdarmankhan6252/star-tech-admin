@@ -45,13 +45,15 @@ const ManageProduct = () => {
 
          <div className="flex flex-col justify-between">
             <div className="w-full">
-               <div className="flex flex-col items-center max-w-3xl w-full overflow-hidden rounded-md bg-white border border-gray-500/20">
+               <div className="flex flex-col items-center max-w-7xl w-full overflow-hidden rounded-md bg-white border border-gray-500/20">
                   <table className="md:table-auto table-fixed w-full overflow-hidden">
                      <thead className="text-gray-900 text-sm text-left">
                         <tr>
+                           <th className="px-4 py-3 font-semibold truncate">SL</th>
                            <th className="px-4 py-3 font-semibold truncate">Product</th>
                            <th className="px-4 py-3 font-semibold truncate">Category</th>
-                           <th className="px-4 py-3 font-semibold truncate hidden md:block">Selling Price</th>
+                           <th className="px-4 py-3 font-semibold truncate">Previous Price</th>
+                           <th className="px-4 py-3 font-semibold truncate">Current Price</th>
                            <th className="px-4 py-3 font-semibold truncate">In Stock</th>
                            <th className="px-4 py-3 font-semibold truncate">DELETE</th>
                         </tr>
@@ -59,6 +61,7 @@ const ManageProduct = () => {
                      <tbody className="text-sm text-gray-500">
                         {products.map((product, index) => (
                            <tr key={index} className="border-t border-gray-500/20">
+                              <td className="px-4 py-3 max-sm:hidden">{index + 1}</td>
                               <td className="md:px-4 pl-2 md:pl-4 py-3 flex items-center space-x-3 truncate">
                                  <div className="border border-gray-300 rounded p-2">
                                     <img src={product.photoUrl} alt="Product" className="w-16" />
@@ -66,6 +69,7 @@ const ManageProduct = () => {
                                  <span className="truncate max-sm:hidden w-full">{product.name}</span>
                               </td>
                               <td className="px-4 py-3">{product.category}</td>
+                              <td className="px-4 py-3 max-sm:hidden">{product.prevPrice}৳</td>
                               <td className="px-4 py-3 max-sm:hidden">{product.currentPrice}৳</td>
                               <td className="px-4 py-3">
                                  <label className="relative inline-flex items-center cursor-pointer text-gray-900 gap-3">
@@ -90,7 +94,7 @@ const ManageProduct = () => {
             deleteModal={deleteModal}
             setDeleteModal={setDeleteModal}
             deleteId={deleteId}
-            refetch={refetch}/>
+            refetch={refetch} />
       </div>
    );
 };

@@ -120,14 +120,15 @@ const AddProduct = () => {
                   <option value="drone">Drone</option>
                   <option value="gimbal">Gimbal</option>
                   <option value="fan">Fan</option>
-                  <option value="scale">Weight Scale</option>
+                  <option value="weight-scale">Weight Scale</option>
                   <option value="tv">TV</option>
-                  <option value="mobile">Mobile Phone</option>
-                  <option value="accessories">Phone Accessories</option>
-                  <option value="ssd">Portable SSD</option>
-                  <option value="camera">Camera</option>
+                  <option value="mobile-phone">Mobile Phone</option>
+                  <option value="phone-accessories">Phone Accessories</option>
+                  <option value="portable-ssd">Portable SSD</option>
+                  <option value="ip-camera">IP Camera</option>
                   <option value="trimmer">Trimmer</option>
-                  <option value="watch">Watch</option>
+                  <option value="smart-watch">Smart Watch</option>
+                  <option value="action-camera">Action Camera</option>
                   <option value="earphone">Earphone</option>
                </select>
             </div>
